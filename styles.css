@@ -1,0 +1,352 @@
+/* Styles for Camera Interaction App 
+ * This is part of a project that's a fork of https://github.com/ngxson/smolvlm-realtime-webcam
+ * Fork maintained by https://github.com/686f6c61
+ */
+
+/* Global Styles */
+body {
+    font-family: 'Montserrat', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* GitHub Corner */
+.github-corner {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 1000;
+    transition: transform 0.3s ease;
+}
+
+.github-corner:hover .octo-arm {
+    animation: octocat-wave 560ms ease-in-out;
+}
+
+@keyframes octocat-wave {
+    0%, 100% { transform: rotate(0); }
+    20%, 60% { transform: rotate(-25deg); }
+    40%, 80% { transform: rotate(10deg); }
+}
+
+.container {
+    flex: 1;
+}
+
+.title {
+    font-weight: 300;
+    letter-spacing: 1px;
+}
+
+.h-100 {
+    height: 100%;
+}
+
+/* Camera Card Styles */
+.camera-card {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    border: none;
+}
+
+.video-feed {
+    width: 100%;
+    height: 350px;
+    display: block;
+    margin: 0 auto;
+    background-color: #121212;
+    object-fit: cover;
+}
+
+/* Card Styles */
+.card {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.03);
+    border: none;
+    transition: all 0.3s ease;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.card:hover {
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.06);
+}
+
+.card-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    background-color: rgba(0, 0, 0, 0.01);
+}
+
+.card-header-title {
+    color: #555;
+    font-size: 0.9rem;
+}
+
+.settings-card .card-header,
+.instruction-card .card-header {
+    min-height: 45px;
+}
+
+.settings-card .card-content,
+.instruction-card .card-content {
+    padding-top: 0.8rem;
+}
+
+/* Form Elements */
+.input, .textarea, .select select {
+    border-radius: 6px;
+    border-color: #e6e6e6;
+    box-shadow: none;
+    transition: all 0.2s;
+}
+
+.input:focus, .textarea:focus, .select select:focus {
+    border-color: #8fb3f3;
+    box-shadow: 0 0 0 1px rgba(79, 153, 255, 0.1);
+}
+
+.input.is-small {
+    height: 2.2em;
+    font-size: 0.85rem;
+}
+
+.label.is-small {
+    font-size: 0.8rem;
+    color: #777;
+    margin-bottom: 0.3rem;
+}
+
+/* Textarea Customizations */
+.textarea.has-fixed-size {
+    resize: none;
+    min-height: 5rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    padding: 0.75rem;
+}
+
+.textarea[readonly] {
+    background-color: #fcfcfc;
+    border-color: #e6e6e6;
+}
+
+.response-container {
+    position: relative;
+}
+
+.response-card .textarea {
+    min-height: 100px;
+}
+
+/* Radio Button Styling */
+.radio {
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #555;
+    display: flex;
+    align-items: center;
+}
+
+.radio input {
+    margin-right: 5px;
+}
+
+/* Button Styling */
+.button.is-primary.start {
+    background-color: #4d9de0;
+    transition: all 0.3s;
+    box-shadow: 0 3px 8px rgba(77, 157, 224, 0.3);
+}
+
+.button.is-primary.start:hover {
+    background-color: #3c8ed0;
+    box-shadow: 0 4px 12px rgba(77, 157, 224, 0.4);
+}
+
+.button.is-danger.stop {
+    background-color: #e15554;
+    transition: all 0.3s;
+    box-shadow: 0 3px 8px rgba(225, 85, 84, 0.3);
+}
+
+.button.is-danger.stop:hover {
+    background-color: #d54645;
+    box-shadow: 0 4px 12px rgba(225, 85, 84, 0.4);
+}
+
+/* Pulse Animation for Start Button */
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(77, 157, 224, 0.5);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(77, 157, 224, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(77, 157, 224, 0);
+    }
+}
+
+.pulse-button {
+    animation: pulse 2s infinite;
+}
+
+/* Status Indicator */
+.status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.status-active {
+    background-color: #4d9de0;
+    box-shadow: 0 0 5px #4d9de0;
+}
+
+.status-inactive {
+    background-color: #e15554;
+    box-shadow: 0 0 5px #e15554;
+}
+
+/* Footer Styles */
+.footer {
+    padding: 1.5rem;
+    margin-top: auto;
+}
+
+.footer-link {
+    color: #6c8eef;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer-link:hover {
+    color: #4d78e6;
+    text-decoration: underline;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f5f5f5;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #ddd;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #ccc;
+}
+
+/* History Panel Styles */
+.history-card {
+    transition: all 0.3s ease;
+}
+
+.history-container {
+    max-height: 300px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#historyPanel.is-active {
+    animation: slideDown 0.3s ease-in-out;
+}
+
+.table th, .table td {
+    vertical-align: middle;
+}
+
+.history-entry {
+    cursor: pointer;
+}
+
+.history-entry:hover {
+    background-color: rgba(0, 0, 0, 0.02) !important;
+}
+
+.history-timestamp {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.history-query, .history-response {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-height: 3.6em;
+    line-height: 1.2em;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+#emptyHistory {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 0;
+}
+
+#emptyHistory i {
+    color: #ddd;
+    margin-bottom: 1rem;
+}
+
+/* Export Button Animation */
+@keyframes pulse-light {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.export-success {
+    animation: pulse-light 0.5s ease;
+    background-color: #effaf5 !important;
+    color: #257953 !important;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Mobile Responsiveness */
+@media screen and (max-width: 768px) {
+    .video-feed {
+        height: 250px;
+    }
+    
+    .card-header-title {
+        font-size: 0.85rem;
+    }
+    
+    .button {
+        font-size: 0.9rem;
+    }
+    
+    .history-container {
+        max-height: 250px;
+    }
+    
+    .table th, .table td {
+        padding: 0.5em 0.5em;
+        font-size: 0.85rem;
+    }
+}

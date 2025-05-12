@@ -4,262 +4,213 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Camera Interaction App</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            padding: 20px;
-            background-color: #f0f0f0;
-        }
-        .controls, .io-areas {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            background-color: #fff;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .io-areas {
-            flex-direction: column;
-            align-items: stretch;
-        }
-        textarea {
-            width: 300px;
-            height: 80px;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-        #videoFeed {
-            width: 480px;
-            height: 360px;
-            border: 2px solid #333;
-            background-color: #000;
-            border-radius: 8px;
-        }
-        #startButton {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            border: none;
-            border-radius: 4px;
-            color: white;
-        }
-        #startButton.start {
-            background-color: #28a745; /* Green */
-        }
-        #startButton.stop {
-            background-color: #dc3545; /* Red */
-        }
-        label {
-            font-weight: bold;
-        }
-        select {
-            padding: 8px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-        }
-        .hidden {
-            display: none;
-        }
-    </style>
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap">
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="has-background-light">
+    <!-- GitHub Corner -->
+    <a href="https://github.com/686f6c61/llama.cpp-realtime-webcam" class="github-corner" aria-label="View source on GitHub" target="_blank">
+        <svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true">
+            <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+            <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+            <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path>
+        </svg>
+    </a>
+    <div class="container">
+        <!-- Header -->
+        <section class="section pt-4 pb-2">
+            <div class="container">
+                <h1 class="title has-text-centered has-text-weight-light">Camera Interaction</h1>
+                <p class="subtitle has-text-centered is-size-6 has-text-grey">Detección de objetos en tiempo real</p>
+            </div>
+        </section>
 
-    <h1>Camera Interaction App</h1>
+        <!-- Main Content -->
+        <div class="columns is-centered">
+            <div class="column is-8-desktop">
+                <!-- Camera Feed -->
+                <div class="card camera-card mb-4">
+                    <div class="card-content p-0 has-text-centered">
+                        <video id="videoFeed" autoplay playsinline class="video-feed"></video>
+                        <canvas id="canvas" class="is-hidden"></canvas> <!-- For capturing frames -->
+                    </div>
+                </div>
 
-    <video id="videoFeed" autoplay playsinline></video>
-    <canvas id="canvas" class="hidden"></canvas> <!-- For capturing frames -->
+                <!-- Settings and Interaction in Two Columns -->
+                <div class="columns mb-4">
+                    <!-- API Settings (Left Column) -->
+                    <div class="column is-6">
+                        <div class="card settings-card h-100">
+                            <header class="card-header">
+                                <p class="card-header-title is-centered has-text-weight-medium">
+                                    <span class="icon mr-2"><i class="fas fa-sliders"></i></span>
+                                    Configuración
+                                </p>
+                            </header>
+                            <div class="card-content">
+                                <div class="columns is-multiline">
+                                    <!-- API URL -->
+                                    <div class="column is-12">
+                                        <div class="field">
+                                            <label class="label is-small">API URL</label>
+                                            <div class="control has-icons-left">
+                                                <input id="baseURL" class="input is-small" type="text" value="http://localhost:8080">
+                                                <span class="icon is-small is-left">
+                                                    <i class="fas fa-server"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Language Selection -->
+                                    <div class="column is-12">
+                                        <div class="field">
+                                            <label class="label is-small">Idioma</label>
+                                            <div class="control">
+                                                <div class="is-flex">
+                                                    <label class="radio mr-3">
+                                                        <input type="radio" name="language" value="es" checked>
+                                                        <span class="ml-1">Español</span>
+                                                    </label>
+                                                    <label class="radio">
+                                                        <input type="radio" name="language" value="en">
+                                                        <span class="ml-1">English</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Instruction (Right Column) -->
+                    <div class="column is-6">
+                        <div class="card instruction-card h-100">
+                            <header class="card-header">
+                                <p class="card-header-title is-centered has-text-weight-medium">
+                                    <span class="icon mr-2"><i class="fas fa-comment"></i></span>
+                                    Instrucción
+                                </p>
+                            </header>
+                            <div class="card-content">
+                                <div class="field">
+                                    <div class="control">
+                                        <textarea id="instructionText" class="textarea has-fixed-size" rows="2" placeholder="¿Qué quieres preguntar?"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-    <div class="io-areas">
-        <div>
-            <label for="baseURL">Base API:</label><br>
-            <input id="baseURL" name="Instruction" value="http://localhost:8080"></textarea>
+                <!-- Response Area -->
+                <div class="card response-card mb-4">
+                    <header class="card-header">
+                        <p class="card-header-title is-centered has-text-weight-medium">
+                            <span class="icon mr-2"><i class="fas fa-robot"></i></span>
+                            Respuesta
+                        </p>
+                        <button id="historyToggle" class="card-header-icon" aria-label="Ver historial">
+                            <span class="icon">
+                                <i class="fas fa-history"></i>
+                            </span>
+                        </button>
+                    </header>
+                    <div class="card-content">
+                        <div class="field">
+                            <div class="control">
+                                <div id="responseContainer" class="response-container">
+                                    <textarea id="responseText" class="textarea has-fixed-size" rows="3" readonly placeholder="La respuesta aparecerá aquí..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- History Panel (initially hidden) -->
+                <div id="historyPanel" class="card history-card mb-4 is-hidden">
+                    <header class="card-header has-background-grey-lighter">
+                        <p class="card-header-title is-centered has-text-weight-medium">
+                            <span class="icon mr-2"><i class="fas fa-history"></i></span>
+                            Historial de Consultas
+                        </p>
+                        <div class="card-header-icon">
+                            <div class="buttons are-small">
+                                <button id="exportTxt" class="button is-light" title="Exportar como TXT">
+                                    <span class="icon is-small">
+                                        <i class="fas fa-file-alt"></i>
+                                    </span>
+                                </button>
+                                <button id="exportCsv" class="button is-light" title="Exportar como CSV">
+                                    <span class="icon is-small">
+                                        <i class="fas fa-file-csv"></i>
+                                    </span>
+                                </button>
+                                <button id="clearHistory" class="button is-light" title="Limpiar historial">
+                                    <span class="icon is-small">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                    </header>
+                    <div class="card-content p-0">
+                        <div class="history-container">
+                            <table class="table is-fullwidth is-hoverable is-striped">
+                                <thead>
+                                    <tr>
+                                        <th width="30%">Timestamp</th>
+                                        <th width="30%">Consulta</th>
+                                        <th width="40%">Respuesta</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="historyList">
+                                    <!-- Entries will be added here dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="emptyHistory" class="has-text-centered py-5 has-text-grey">
+                            <p><i class="fas fa-inbox fa-2x mb-3"></i><br>No hay consultas en el historial</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controls -->
+                <div class="field has-text-centered mb-4">
+                    <div class="control">
+                        <button id="startButton" class="button is-medium is-primary is-rounded start pulse-button">
+                            <span class="icon">
+                                <i class="fas fa-play"></i>
+                            </span>
+                            <span>Iniciar</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div>
-            <label for="instructionText">Instruction:</label><br>
-            <textarea id="instructionText" style="height: 2em; width: 40em" name="Instruction"></textarea>
-        </div>
-        <div>
-            <label for="responseText">Response:</label><br>
-            <textarea id="responseText" style="height: 2em; width: 40em" name="Response" readonly placeholder="Server response will appear here..."></textarea>
-        </div>
+
+        <!-- Footer -->
+        <footer class="footer has-background-white-bis has-text-centered mt-5 py-3">
+            <div class="content has-text-grey is-small">
+                <p>
+                    Fork de <a href="https://github.com/ngxson/smolvlm-realtime-webcam" class="footer-link" target="_blank">smolvlm-realtime-webcam</a> · 
+                    Mantenido por <a href="https://github.com/686f6c61" class="footer-link" target="_blank">686f6c61</a>
+                </p>
+            </div>
+        </footer>
     </div>
 
-    <div class="controls">
-        <label for="intervalSelect">Interval between 2 requests:</label>
-        <select id="intervalSelect" name="Interval between 2 requests">
-            <option value="100">100ms</option>
-            <option value="250">250ms</option>
-            <option value="500" selected>500ms</option>
-            <option value="1000">1s</option>
-            <option value="2000">2s</option>
-        </select>
-        <button id="startButton" class="start">Start</button>
-    </div>
-
-    <script>
-        const video = document.getElementById('videoFeed');
-        const canvas = document.getElementById('canvas');
-        const baseURL = document.getElementById('baseURL');
-        const instructionText = document.getElementById('instructionText');
-        const responseText = document.getElementById('responseText');
-        const intervalSelect = document.getElementById('intervalSelect');
-        const startButton = document.getElementById('startButton');
-
-        instructionText.value = "What do you see?"; // default instruction
-
-        let stream;
-        let intervalId;
-        let isProcessing = false;
-
-        // Returns response text (string)
-        async function sendChatCompletionRequest(instruction, imageBase64URL) {
-            const response = await fetch(`${baseURL.value}/v1/chat/completions`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    max_tokens: 100,
-                    messages: [
-                        { role: 'user', content: [
-                            { type: 'text', text: instruction },
-                            { type: 'image_url', image_url: {
-                                url: imageBase64URL,
-                            } }
-                        ] },
-                    ]
-                })
-            });
-            if (!response.ok) {
-                const errorData = await response.text();
-                return `Server error: ${response.status} - ${errorData}`;
-            }
-            const data = await response.json();
-            return data.choices[0].message.content;
-        }
-
-        // 1. Ask for camera permission on load
-        async function initCamera() {
-            try {
-                stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-                video.srcObject = stream;
-                responseText.value = "Camera access granted. Ready to start.";
-            } catch (err) {
-                console.error("Error accessing camera:", err);
-                responseText.value = `Error accessing camera: ${err.name} - ${err.message}. Please ensure permissions are granted and you are on HTTPS or localhost.`;
-                alert(`Error accessing camera: ${err.name}. Make sure you've granted permission and are on HTTPS or localhost.`);
-            }
-        }
-
-        function captureImage() {
-            if (!stream || !video.videoWidth) {
-                console.warn("Video stream not ready for capture.");
-                return null;
-            }
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            const context = canvas.getContext('2d');
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            return canvas.toDataURL('image/jpeg', 0.8); // Use JPEG for smaller size, 0.8 quality
-        }
-
-        async function sendData() {
-            if (!isProcessing) return; // Ensure we don't have overlapping requests if processing takes longer than interval
-
-            const instruction = instructionText.value;
-            const imageBase64URL = captureImage();
-
-            if (!imageBase64URL) {
-                responseText.value = "Failed to capture image. Stream might not be active.";
-                // Optionally stop processing if image capture fails consistently
-                // handleStop();
-                return;
-            }
-
-            const payload = {
-                instruction: instruction,
-                imageBase64URL: imageBase64URL
-            };
-
-            try {
-                const response = await sendChatCompletionRequest(payload.instruction, payload.imageBase64URL);
-                responseText.value = response;
-            } catch (error) {
-                console.error('Error sending data:', error);
-                responseText.value = `Error: ${error.message}`;
-            }
-        }
-
-        function handleStart() {
-            if (!stream) {
-                responseText.value = "Camera not available. Cannot start.";
-                alert("Camera not available. Please grant permission first.");
-                return;
-            }
-            isProcessing = true;
-            startButton.textContent = "Stop";
-            startButton.classList.remove('start');
-            startButton.classList.add('stop');
-
-            instructionText.disabled = true;
-            intervalSelect.disabled = true;
-
-            responseText.value = "Processing started...";
-
-            const intervalMs = parseInt(intervalSelect.value, 10);
-            
-            // Initial immediate call
-            sendData(); 
-            
-            // Then set interval
-            intervalId = setInterval(sendData, intervalMs);
-        }
-
-        function handleStop() {
-            isProcessing = false;
-            if (intervalId) {
-                clearInterval(intervalId);
-                intervalId = null;
-            }
-            startButton.textContent = "Start";
-            startButton.classList.remove('stop');
-            startButton.classList.add('start');
-
-            instructionText.disabled = false;
-            intervalSelect.disabled = false;
-            if (responseText.value.startsWith("Processing started...")) {
-                responseText.value = "Processing stopped.";
-            }
-        }
-
-        startButton.addEventListener('click', () => {
-            if (isProcessing) {
-                handleStop();
-            } else {
-                handleStart();
-            }
-        });
-
-        // Initialize camera when the page loads
-        window.addEventListener('DOMContentLoaded', initCamera);
-
-        // Optional: Stop stream when page is closed/navigated away to release camera
-        window.addEventListener('beforeunload', () => {
-            if (stream) {
-                stream.getTracks().forEach(track => track.stop());
-            }
-            if (intervalId) {
-                clearInterval(intervalId);
-            }
-        });
-
-    </script>
+    <!-- Configuration -->
+    <script src="config.js"></script>
+    <!-- Main Script -->
+    <script src="script.js"></script>
 </body>
 </html>
